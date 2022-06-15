@@ -1,7 +1,33 @@
 <html>
- <script>
-  const number = prompt('Número de whatsapp');
-  if(number)
-    window.location.href = `https://wa.me/506${number}`;
- </script>
+<style>
+    div.centered {
+        display: flex;
+        margin-top: 20px;
+        justify-content: center;
+    }
+</style>
+<div>
+    <div class="centered">
+        <b>Type number here</b>
+    </div>
+    <div class="centered">
+        <input type="text" id="phone_number" />
+    </div>
+    <div class="centered">
+        <button id="open" >Open</button>
+    </div>
+</div>
+<script>
+    const input = document.querySelector('#phone_number');
+    const button = document.querySelector('#open');
+
+    button.addEventListener('click', () => {
+        const text = input.value;
+        const number = text.match(/(\d ?){8}$/)[0].replace(' ','')
+        if (number)
+            window.location.href = `https://wa.me/506${number}`;
+    }, null);
+
+</script>
+
 </html>
