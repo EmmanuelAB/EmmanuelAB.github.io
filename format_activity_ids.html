@@ -1,0 +1,69 @@
+<html>
+    <style>
+        .text-box {
+            margin: 10px;
+            padding: 5px;
+            border: 3px solid gray;
+            border-radius: 5px;
+        }
+        h2, h3{
+            text-align: center;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+    
+    <h2>Total number of ids: <span id="count">[?]</span></h2>
+    <h3 id="error" class="error"></h3>
+    <div style="display:flex; justify-content: center;">
+        <textarea class="text-box" id="source-text" rows="20" cols="50" placeholder="Enter ids here one per line"></textarea>
+        <textarea class="text-box" id="single-quote" rows="50" cols="50" placeholder="List enclosed with '"></textarea>
+        <textarea class="text-box" id="double-quote" rows="50" cols="50" placeholder="List enclosed with &quot"></textarea>
+    </div>
+
+  <script>
+    function setError(msg){
+        document.getElementById("error").innerText = msg;
+    };
+    function validateDuplicates(values){
+        let dict = {};
+        const duplicates = [];
+        for(const e of values){
+            if(e in dict){
+                duplicates.push(e);
+            }
+            else{
+                dict[e] = true;
+            }
+        }
+        if(duplicates.length > 0){
+            setError(`The following elements [${duplicates}] seem to appear more than once in the list, please verify the ids`);
+            throw new Error('Duplicated ids found');
+        }
+    }
+    function wrapWith(elems, delimiter) {
+      return elems
+        .map((e, i) => {
+          const isLast = i == elems.length - 1;
+          return `${delimiter}${e}${delimiter}${isLast ? "" : ","}`;
+        })
+        .join("\n");
+    }
+    function onConvert() {
+      document.getElementById("count").innerText = '[?]';
+      setError('');
+
+      const input = document.getElementById("source-text").value;
+      const values = input
+        .split("\n")
+        .map((e) => e.trim())
+        .filter((e) => e.length > 0);
+      validateDuplicates(values);
+      document.getElementById("single-quote").value = wrapWith(values, `'`);
+      document.getElementById("double-quote").value = wrapWith(values, `"`);
+      document.getElementById("count").innerText = values.length;
+    }
+    document.getElementById("source-text").addEventListener("focusout", onConvert);
+  </script>
+</html>
